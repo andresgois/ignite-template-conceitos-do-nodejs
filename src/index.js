@@ -88,12 +88,8 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
       user.done
     }
   });
-  
-  const x = user.todos.filter( (user) => user.id === id)
-  delete x[0].id
-  delete x[0].created_at
-  
-  return response.send(x[0]);
+
+  return response.send(user);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
