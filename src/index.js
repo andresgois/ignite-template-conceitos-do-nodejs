@@ -74,59 +74,44 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { title, deadline } = request.body;
   const { id } = request.params;
 
-  const userTodo = user.todos.some( (user) => user.id === id);
-
-  if(!userTodo){
+  const userTodo = user.todos.find( (user) => user.id === id)
+  
+  if(userTodo === undefined){
     return response.status(404).send({error: 'Mensagem do erro'});
   }
+  userTodo.title = title
+  userTodo.deadline = deadline
+  userTodo.done
   
-  
-  const userTodo2 = user.todos.filter( (user) => {
-    if(user.id === id){
-      user.title = title 
-      user.deadline = new Date(deadline) 
-      user.done
-    }
-  });
-
-  return response.send(user);
+  return response.send(userTodo);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const { id } = request.params;
   const { user } = request;
-  const userTodo = user.todos.some( (user) => user.id === id)
+  const userTodo = user.todos.find( (user) => user.id === id)
 
-  if(!userTodo){
+  if(userTodo === undefined){
     return response.status(404).send({error: 'Mensagem do erro'});
   }
-  
-  const userFiltro = user.todos.filter( item => {
-    if(item.id === id){
-      item.done = true;
-    }
-  });
-  
-  const retorno = user.todos.filter( item => item.id === id);
+  userTodo.done = true;
 
-  return response.json(retorno[0]);
+  return response.json(userTodo);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { id } = request.params;
   const { user } = request;
   
-  const userId = user.todos.some( item => item.id === id)
-  if(!userId){
+  const userId = user.todos.find( item => item.id === id)
+  if(userId === undefined){
     return response.status(404).json({error: "Mensagem do erro"})
   }
-  const userFiltro = user.todos.filter( item => {
-    if(item.id === id){
-      user.todos.splice(item, 1)
-    }
+  user.todos.filter( item => {
+    if(item.id === id)  user.todos.splice(item, 1)
   });
-
-  return response.status(204).json(userFiltro.title, userFiltro.deadline, userFiltro.done);
+  
+  return response.status(204).json(userId);
 });
 
 module.exports = app;
